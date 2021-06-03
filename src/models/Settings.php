@@ -26,7 +26,7 @@ class Settings extends Model
     /**
      * @var string
      */
-    public $secretKey = '';
+    public $secretKey = Craft::parseEnv('JWT_AUTH_SECRET');
     public $autoCreateUser = '';
 
     // Public Methods
