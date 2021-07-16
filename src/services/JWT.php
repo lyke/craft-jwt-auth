@@ -85,7 +85,10 @@ class JWT extends Component
     */
     public function verifyJWT(Token $token)
     {
-        $secretKey = CraftJwtAuth::getInstance()->getSettings()->secretKey;
+        $secretKey =  getenv('JWT_AUTH_SECRET');
+        if(!$secretKey) {
+            $secretKey =  CraftJwtAuth::getInstance()->getSettings()->secretKey;
+        }
 
         // Attempt to verify the token
         $verify = $token->verify((new Sha256()), $secretKey);
