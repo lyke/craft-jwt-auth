@@ -45,7 +45,7 @@ class CraftJwtAuth extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '0.1.0';
+    public string $schemaVersion = '0.1.0';
 
     // Public Methods
     // =========================================================================
@@ -94,7 +94,7 @@ class CraftJwtAuth extends Plugin
     /**
      * @inheritdoc
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): ?\craft\base\Model
     {
         return new Settings();
     }
@@ -102,7 +102,7 @@ class CraftJwtAuth extends Plugin
     /**
      * @inheritdoc
      */
-    protected function settingsHtml(): string
+    protected function settingsHtml(): ?string
     {
         return Craft::$app->view->renderTemplate(
             'craft-jwt-auth/settings',

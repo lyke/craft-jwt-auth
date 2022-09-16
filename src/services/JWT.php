@@ -17,7 +17,7 @@ use craft\elements\User;
 use craft\helpers\StringHelper;
 use craft\helpers\ArrayHelper;
 use edenspiekermann\craftjwtauth\CraftJwtAuth;
-use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Token\Parser;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Token;
 
