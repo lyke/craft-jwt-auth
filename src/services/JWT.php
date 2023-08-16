@@ -20,6 +20,10 @@ use edenspiekermann\craftjwtauth\CraftJwtAuth;
 use Lcobucci\JWT\Token\Parser;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Token;
+use Lcobucci\JWT\Encoding\JoseEncoder;
+use Lcobucci\JWT\Validation\Validator;
+use Lcobucci\JWT\Validation\Constraint\RelatedTo;
+use Lcobucci\JWT\Validation\Constraint\HasClaimWithValue;
 
 /**
  * @author    Mike Pierce
@@ -72,7 +76,7 @@ class JWT extends Component
     public function parseJWT($accessToken)
     {
         if (count(explode('.', $accessToken)) === 3) {
-            $token = (new Parser())->parse((string) $accessToken);
+            $token = (new Parser(new JoseEncoder()))->parse((string) $accessToken);
 
             return $token;
         }
@@ -91,9 +95,19 @@ class JWT extends Component
         }
 
         // Attempt to verify the token
-        $verify = $token->verify((new Sha256()), $secretKey);
+        // $verify = $token->verify((new Sha256()), $secretKey);
+        $validator = new Validator();
 
-        return $verify;
+        if (! $validator->validate($token, new RelatedTo($secretKey))) {
+            echo 'Invalid token (1)!', PHP_EOL; // will print this;
+            return 'Invalid token (1)!';
+        }
+
+        if (! $validator->validate($token, new RelatedTo($secretKey))) {
+            echo 'Invalid token (2)!', PHP_EOL; // will not print this;
+            return 'Invalid token (2)!';
+        }
+
     }
 
     /*
@@ -103,9 +117,10 @@ class JWT extends Component
     {
         if ($this->verifyJWT($token)) {
             // Derive the username from the subject in the token
-            $email = $token->getClaim('email', '');
-            $userName = $token->getClaim('sub', '');
-
+            // $email = $token->getClaim('email', '');
+            $email = new HasClaimWithValue('email', '');
+            // $userName = $token->getClaim('sub', '');
+            $userName = new HasClaimWithValue('sub', '');
             // Look for the user with email
             $user = Craft::$app->users->getUserByUsernameOrEmail($email ?: $userName);
 
